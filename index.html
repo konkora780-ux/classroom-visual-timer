@@ -32,7 +32,7 @@
  .app[data-layout=landscape] .badge,.app[data-layout=landscape] .hint{display:none}
  .app[data-layout=landscape] h1{font-size:22px;margin:0}
  .app[data-layout=landscape] .layoutpick{padding:3px;margin:3px auto}
- .app[data-layout=landscape] .card{padding:8px;gap:6px 12px;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+ .app[data-layout=landscape] .card{padding:8px;gap:4px 12px;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
  .app[data-layout=landscape] .timer-actions{display:grid;grid-template-columns:1fr 1fr;gap:4px;align-items:center}
  .app[data-layout=landscape] .presets,.app[data-layout=landscape] .buttons{grid-column:1/-1}
  .app[data-layout=landscape] .presets,.app[data-layout=landscape] .controls,.app[data-layout=landscape] .extend,.app[data-layout=landscape] .voiceopt,.app[data-layout=landscape] .extras{margin:0;gap:5px}
@@ -47,6 +47,17 @@
  .app[data-layout=landscape] .clock{font-size:clamp(32px,6vw,64px)}
  .app[data-layout=landscape] .modebar,.app[data-layout=landscape] .modebar select{font-size:12px;padding:4px}
  .app[data-layout=landscape] .multi summary{font-size:14px;padding:4px}
+}
+/* Give the three primary actions larger, equal touch targets. */
+.app .buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%}
+.app .buttons button{min-width:0;min-height:64px;padding:14px 6px;font-size:clamp(16px,2.2vw,22px);border-radius:18px}
+@media (orientation:landscape) and (max-height:750px){
+ .app[data-layout=landscape] .buttons{gap:6px}
+ .app[data-layout=landscape] .buttons button{min-height:48px;padding:10px 4px;font-size:clamp(14px,2vw,20px)}
+}
+@media (orientation:landscape) and (max-height:420px){
+ body{padding:2px 10px}
+ .app[data-layout=landscape] .card{padding:4px}
 }
 </style></head><body><main class="app"><div class="badge">★ CLASSROOM TIMER ★</div><h1>わくわくタイマー</h1><p class="sub">のこり時間がひと目でわかる！</p><div class="layoutpick" role="group" aria-label="画面の配置"><label><input type="radio" name="layout" value="auto">自動切り替え</label><label><input type="radio" name="layout" value="landscape">横向き固定</label><label><input type="radio" name="layout" value="portrait">縦向き固定</label></div><section class="card"><div class="timer-display"><div class="ring" id="ring"><div class="inner"><span class="label">のこり時間</span><div id="clock" class="clock" role="timer">05:00</div><div id="status" class="status" aria-live="polite">じゅんびOK！</div></div></div><div class="barview"><div class="barfill" id="barfill"></div></div><div class="sandview" id="sandview" aria-hidden="true">⌛</div><div class="modebar"><label>表示デザイン <select id="viewmode"><option value="circle">円形</option><option value="bar">横棒</option><option value="sand">砂時計</option></select></label></div></div><div class="timer-actions"><div class="presets"><button data-time="60">1分</button><button data-time="180">3分</button><button data-time="300">5分</button><button data-time="600">10分</button></div><div class="controls"><label>分 <input id="minutes" type="number" min="0" max="999" value="5"></label><label>秒 <input id="seconds" type="number" min="0" max="59" value="0"></label></div><div class="extend"><button id="plus1">＋1分</button><button id="plus5">＋5分</button></div><div class="buttons"><button id="start">▶ スタート</button><button id="pause" disabled>Ⅱ とめる</button><button id="reset">↺ リセット</button></div><label class="voiceopt"><input id="voice" type="checkbox" checked> 音声でお知らせ</label><div class="extras"><button id="fullscreen">⛶ 全画面</button><button id="soundtest">♪ 音を確認</button></div></div><div class="sequence"><h2>連続タイマー</h2><div class="steps"><input id="step1" value="準備" aria-label="1番目の活動名"><input id="step1min" type="number" min="1" max="999" value="3" aria-label="1番目の分数"><input id="step2" value="活動" aria-label="2番目の活動名"><input id="step2min" type="number" min="1" max="999" value="15" aria-label="2番目の分数"><input id="step3" value="片付け" aria-label="3番目の活動名"><input id="step3min" type="number" min="1" max="999" value="5" aria-label="3番目の分数"></div><div id="stepinfo" class="stepinfo"></div><button id="sequenceStart">▶ 連続タイマー開始</button><button id="sequenceCancel">連続を解除</button></div><details class="multi"><summary>同時タイマー（3つ）</summary><div id="multirows"></div></details></section><div id="confetti" class="confetti" aria-hidden="true"></div><p class="hint">残り半分までは青緑、半分から黄色、残り4分の1で赤になるよ</p></main><script>
 const $=id=>document.getElementById(id);let remaining=300,total=300,deadline=0,interval=null,running=false,announced=new Set(),audioCtx=null,sequence=[],stepIndex=0;
